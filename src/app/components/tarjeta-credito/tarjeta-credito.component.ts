@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tarjeta-credito',
@@ -15,7 +16,8 @@ export class TarjetaCreditoComponent {
 
   form: FormGroup;
 
-  constructor(private fb:FormBuilder){
+  constructor(private fb:FormBuilder,
+    private toastr: ToastrService){
     this.form = this.fb.group({
       titular:['', Validators.required],
       numeroTarjeta:['',[Validators.required, Validators.minLength(16), Validators.maxLength(16)]],
@@ -35,6 +37,7 @@ export class TarjetaCreditoComponent {
     }
 
     this.listTarjetas.push(tarjeta);
+    this.toastr.success('La tarjeta fue registrada con éxito', 'Tarjeta registrada!');
     this.form.reset();
   }
 

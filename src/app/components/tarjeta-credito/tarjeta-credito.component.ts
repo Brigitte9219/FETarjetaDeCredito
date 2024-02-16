@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-tarjeta-credito',
@@ -17,10 +17,10 @@ export class TarjetaCreditoComponent {
 
   constructor(private fb:FormBuilder){
     this.form = this.fb.group({
-      titular:[''],
-      numeroTarjeta:[''],
-      fechaExpiracion:[''],
-      cvv:['']
+      titular:['', Validators.required],
+      numeroTarjeta:['',[Validators.required, Validators.minLength(16), Validators.maxLength(16)]],
+      fechaExpiracion:['', [Validators.required,Validators.minLength(5), Validators.maxLength(5)]],
+      cvv:['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]]
     })
   }
 
@@ -29,9 +29,9 @@ export class TarjetaCreditoComponent {
 
     const tarjeta:any = {
       titular: this.form.get('titular')?.value,
-        numeroTarjeta: this.form.get('titular')?.value,
-        fechaExpiracion: this.form.get('titular')?.value,
-        cvv: this.form.get('titular')?.value,
+        numeroTarjeta: this.form.get('numeroTarjeta')?.value,
+        fechaExpiracion: this.form.get('fechaExpiracion')?.value,
+        cvv: this.form.get('cvv')?.value,
     }
 
     this.listTarjetas.push(tarjeta);

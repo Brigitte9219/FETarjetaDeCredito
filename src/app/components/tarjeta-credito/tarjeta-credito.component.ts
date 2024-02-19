@@ -10,10 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class TarjetaCreditoComponent {
 
-  listTarjetas:any[]=[
-    { titular:'Juan Perez', numeroTarjeta:'123456',fechaExpiracion:'11/24', cvv:'123'},
-    { titular:'Miguel Gonzalez', numeroTarjeta:'654321',fechaExpiracion:'12/24', cvv:'321'}
-  ];
+  listTarjetas:any[]=[];
 
   form: FormGroup;
 
@@ -34,6 +31,7 @@ export class TarjetaCreditoComponent {
   obtenerTarjetas(){
     this._tarjetaService.getListTarjetas().subscribe(data => {
       console.log(data);
+      this.listTarjetas = data;
     }, error => {
       console.log(error);
     } )
@@ -54,10 +52,14 @@ export class TarjetaCreditoComponent {
     this.form.reset();
   }
 
-  eliminarTarjeta(index:number){
-    console.log(index);
-    this.listTarjetas.splice(index, 1);
-    this.toastr.error('La tarjeta fue eliminada con éxito', 'Tarjeta eliminada!');
+  eliminarTarjeta(id:number){
+    this._tarjetaService.deleteTarjeta(id).subscribe(data => {
+      this.toastr.error('La tarjeta fue eliminada con éxito', 'Tarjeta eliminada!');
+      this.obtenerTarjetas();
+    }, error => {
+      console.log(error);
+    } )
+
   }
 
 }

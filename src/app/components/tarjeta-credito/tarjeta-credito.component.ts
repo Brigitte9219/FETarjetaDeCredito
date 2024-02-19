@@ -37,21 +37,6 @@ export class TarjetaCreditoComponent {
     } )
   }
 
-  agregarTarjeta(){
-    console.log(this.form);
-
-    const tarjeta:any = {
-      titular: this.form.get('titular')?.value,
-        numeroTarjeta: this.form.get('numeroTarjeta')?.value,
-        fechaExpiracion: this.form.get('fechaExpiracion')?.value,
-        cvv: this.form.get('cvv')?.value,
-    }
-
-    this.listTarjetas.push(tarjeta);
-    this.toastr.success('La tarjeta fue registrada con éxito', 'Tarjeta registrada!');
-    this.form.reset();
-  }
-
   eliminarTarjeta(id:number){
     this._tarjetaService.deleteTarjeta(id).subscribe(data => {
       this.toastr.error('La tarjeta fue eliminada con éxito', 'Tarjeta eliminada!');
@@ -60,6 +45,22 @@ export class TarjetaCreditoComponent {
       console.log(error);
     } )
 
+  }
+
+  agregarTarjeta(){
+
+    const tarjeta:any = {
+      titular: this.form.get('titular')?.value,
+        numeroTarjeta: this.form.get('numeroTarjeta')?.value,
+        fechaExpiracion: this.form.get('fechaExpiracion')?.value,
+        cvv: this.form.get('cvv')?.value,
+    }
+
+    this._tarjetaService.saveTarjeta(tarjeta).subscribe(data => {
+      this.toastr.success('La tarjeta fue registrada con éxito', 'Tarjeta registrada!');
+      this.obtenerTarjetas();
+      this.form.reset();
+    })
   }
 
 }

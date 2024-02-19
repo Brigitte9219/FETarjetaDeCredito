@@ -14,6 +14,9 @@ export class TarjetaCreditoComponent {
 
   form: FormGroup;
 
+  accion:string ='agregar';
+  id:number | undefined;
+
   constructor(private fb:FormBuilder, private toastr: ToastrService,
     private _tarjetaService:TarjetaService){
     this.form = this.fb.group({
@@ -47,7 +50,7 @@ export class TarjetaCreditoComponent {
 
   }
 
-  agregarTarjeta(){
+  guardarTarjeta(){
 
     const tarjeta:any = {
       titular: this.form.get('titular')?.value,
@@ -56,10 +59,40 @@ export class TarjetaCreditoComponent {
         cvv: this.form.get('cvv')?.value,
     }
 
-    this._tarjetaService.saveTarjeta(tarjeta).subscribe(data => {
-      this.toastr.success('La tarjeta fue registrada con éxito', 'Tarjeta registrada!');
-      this.obtenerTarjetas();
-      this.form.reset();
+    if(this.id == undefined){
+      //Agregamos una nueva tarjeta
+      this._tarjetaService.saveTarjeta(tarjeta).subscribe(data => {
+        this.toastr.success('La tarjeta fue registrada con éxito', 'Tarjeta registrada');
+        this.obtenerTarjetas();
+        this.form.reset();
+      }, error => {
+        this.toastr.error('Ops.. ocurrio un error','Error')
+        console.log(error);
+      })
+    } else {
+      tarjeta.id = this.id;
+      //Editamos una tarjeta
+      this._tarjetaService.updateTarjeta(this.id,tarjeta).subscribe(data => {
+        this.form.reset();
+        this.accion = 'agregar';
+        this.id = undefined;
+        this.toastr.info('La tarjeta fue actualizada con éxito!', 'Tarjeta actualizada');
+        this.obtenerTarjetas();
+      },error =>{
+        console.log(error);
+      } )
+    }
+  }
+
+  editarTarjeta(tarjeta:any){
+    this.accion = 'editar';
+    this.id = tarjeta.id;
+
+    this.form.patchValue({
+      titular: tarjeta.titular,
+      numeroTarjeta: tarjeta.numeroTarjeta,
+      fechaExpiracion: tarjeta.fechaExpiracion,
+      cvv: tarjeta.cvv
     })
   }
 
